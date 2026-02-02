@@ -1,0 +1,35 @@
+name: Conditional Workflow
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run tests
+        run: bun test
+
+      # Only run on main branch
+      - name: Build for production
+        if: github.ref == 'refs/heads/main'
+        run: bun run build
+
+      # Only run on pull requests
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        run: echo "This is a pull request!"
+
+      # Run even if previous steps fail
+      - name: Cleanup
+        if: always()
+        run: echo "Cleaning up..."
