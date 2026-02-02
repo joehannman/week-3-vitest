@@ -59,3 +59,4 @@ jobs:
 
       - name: Build
         run: bun run build
+        if: github.ref == "refs/head/main"
